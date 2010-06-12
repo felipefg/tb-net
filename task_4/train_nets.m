@@ -37,12 +37,12 @@ end
 
 %% Train the networks
 parfor i=1:size(nets, 2),
-    
+
     trained_nets = cell(1, rc.trainsPerDeal);
     trained_trs  = cell(1, rc.trainsPerDeal);
     mses = zeros(1, rc.trainsPerDeal);
     SPs  = zeros(1, rc.trainsPerDeal);
-    
+
     for j=1:rc.trainsPerDeal,
         % Create the network
         net = newff2(train, [-1 1], [rc.neurons], rc.functions);
@@ -53,25 +53,29 @@ parfor i=1:size(nets, 2),
         net.trainParam.epochs    = rc.trainParam.epochs;
         net.trainParam.max_fail  = rc.trainParam.max_fail;
         net.trainParam.showWindow= 0;
-        
+
         % Train
         [net, tr] = ntrain(net, train, validation);
-        
+
         % Extract performances
         mses(j) = min(tr.mse_val);
-        
+
         out_positive = sim(net, validation{1});
-        out_negative = sim(net, validation{1});
+        out_negative = sim(net, validation{2});
         [spVec, cutVec, detVec, faVec] = genROC(out_positive, out_negative);
         SPs(j) = max(spVec);
-        
+
         % Save data
         trained_nets{j} = net;
         trained_trs{j} = tr;
     end
-    
-    nets{i}.nets = trained_nets;
-    nets{i}.trs = trained_trs;
+
+    % Pick only the best net for this deal
+    [bestSP iBestSP] = max(SPs);
+    nets{i}.net = trained_nets(iBestSP);
+    nets{i}.tr  = trained_trs(iBestSP);
+    nets{i}.SP  = bestSP;
+    nets{i}.mse = mses(iBestSP);
 end
 
 %% Save
