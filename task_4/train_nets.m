@@ -53,6 +53,7 @@ parfor i=1:size(nets, 2),
         net.trainParam.epochs    = rc.trainParam.epochs;
         net.trainParam.max_fail  = rc.trainParam.max_fail;
         net.trainParam.showWindow= 0;
+        net.trainParam.show = 100;
 
         % Train
         [net, tr] = ntrain(net, train, validation);
