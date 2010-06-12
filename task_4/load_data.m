@@ -24,10 +24,27 @@ class_negative = data(find(target<0),:);
 train =      { class_positive_train     , class_negative_train };
 validation = { class_positive_validation, class_negative_validation };
 
+%% Normalize data for the 8 variables
+centers = zeros(8, 1);
+factors =  ones(8, 1);
+
+all_train = [train{1} train{2}];
+centers(1,1) = mean(all_train(1,:));
+factors(1,1) = 1.0/max(abs(all_train(1,:) - centers(1,1)));
+
+% Apply the normalization
+for i=1:2,
+    train{i} = train{i} -  repmat(centers, 1, size(train{i}, 2));
+    train{i} = train{i} .* repmat(factors, 1, size(train{i}, 2));
+
+    validation{i} = validation{i} -  repmat(centers, 1, size(validation{i}, 2));
+    validation{i} = validation{i} .* repmat(factors, 1, size(validation{i}, 2));
+end
+
 %% Save results to freeze the random selection of groups
-save train_validation_data train validation
+save train_validation_data train validation centers factors
 
 %% Clean up
-clear data target
+clear data target all_train i
 clear class_positive class_positive_train class_positive_validation
 clear class_negative class_negative_train class_negative_validation
