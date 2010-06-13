@@ -56,6 +56,7 @@ def plotLines(lines):
     ax.grid()
     ax.set_xlabel('Tamanho da batelada')
     ax.set_ylabel('Produto SP maximo')
+    ax.set_xticks(X)
     return fig
 
 if __name__ == "__main__":
