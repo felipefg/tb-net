@@ -40,9 +40,11 @@ def getMatlabData(filename):
     return lines
 
 def plotLines(lines):
+    colors = ['b', 'g', 'r', 'k']
+
     fig = p.figure()
     ax = fig.gca()
-    for line in lines:
+    for i, line in enumerate(lines):
         X = sorted(line['batch'].keys())
         Y = []
         Yerr = []
@@ -50,7 +52,11 @@ def plotLines(lines):
             Y.append(  np.mean(line['batch'][x]['sp']))
             Yerr.append(np.std(line['batch'][x]['sp']))
 
-        ax.errorbar(X, Y, Yerr, label=line['name'], fmt='-o')
+        color = colors[i%len(colors)]
+        # Plot the errorbar with modified endcaps
+        ax.errorbar(X, Y, Yerr, fmt=color+'-', capsize=5, mew=2)
+        # Plot the markers
+        ax.plot(X, Y, color+'o-', label=line['name'])
 
     ax.legend(loc='lower right')
     ax.grid()
