@@ -32,3 +32,17 @@ Dados de Guadalupe
   8. SIDA
   9. Diagnostico (alvo)
 
+- ``10v.txt``: Dados de Guadalupe, com as 8 variáveis da tese da Alcione e as
+  duas do modelo do Rafael:
+
+  1. Idade
+  2. Tosse
+  3. Hemoptoico e/ou Hemoptise
+  4. Sudorese Noturna
+  5. Febre
+  6. Emagrecimento
+  7. Dispneia
+  8. SIDA
+  9. Sexo (-1 homem, 1 mulher)
+  10. Dor toracica
+  11. Diagnostico (alvo)
