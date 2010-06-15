@@ -46,3 +46,9 @@ Dados de Guadalupe
   9. Sexo (-1 homem, 1 mulher)
   10. Dor toracica
   11. Diagnostico (alvo)
+
+Bases alternativas
+------------------
+
+- ``alternativa_109.txt`` e ``alternativa_107.txt``: Idênticas a ``10v.txt`` e
+  ``8v_alcione.txt``, mas sem a variável SIDA.
