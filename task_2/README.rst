@@ -25,7 +25,7 @@ Dados de Guadalupe
 Dados retirados de ScoreTB_RNeural_set06_jul07Banco_Final_jan2010casos.xls,
 adaptados por Cascão. ::
 
-  guadalupe.txt: Acuracia:  44.34% Sensibilidade  64.61% Especificidade  38.90%
+guadalupe      : Acuracia:  36.63% Sensibilidade  80.17% Especificidade  24.94% 
 
 Ordem das variáveis para a rede neural
 --------------------------------------
