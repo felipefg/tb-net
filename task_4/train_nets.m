@@ -19,7 +19,7 @@ end
 
 %% Setup environment
 n_train_c1 = size(train{1}, 2);
-n_train_c2 = size(train{1}, 2);
+n_train_c2 = size(train{2}, 2);
 batch_size = linspace(10, max(n_train_c1, n_train_c2), rc.nBatchSize);
 batch_size = round(batch_size);
 
