@@ -5,6 +5,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as p
 import scipy.io.matlab
+import sys
 
 lineNames = {
         'useSP_0': 'Parada por MSE',
@@ -66,6 +67,6 @@ def plotLines(lines):
     return fig
 
 if __name__ == "__main__":
-    lines = getMatlabData('results.mat')
+    lines = getMatlabData(sys.argv[1])
     fig = plotLines(lines)
-    p.savefig('sp_evolution.png')
+    p.savefig('%s_sp_evolution.png'%(sys.argv[1][:-4]))

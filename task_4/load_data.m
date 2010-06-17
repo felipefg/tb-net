@@ -44,9 +44,6 @@ for i=1:2,
     validation{i} = validation{i} .* repmat(factors, 1, size(validation{i}, 2));
 end
 
-%% Save results to freeze the random selection of groups
-save train_validation_data train validation centers factors
-
 %% Clean up
 clear data target all_train i
 clear class_positive class_positive_train class_positive_validation
