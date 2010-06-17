@@ -2,7 +2,7 @@ Tarefa 4
 ========
 
 Estudo dos parâmetros de treinamento da rede com dados de Guadalupe, na
-configuração 8-4-1, usando FastNET.
+configuração usando FastNET.
 
 Objetivo: Avaliar efeito que o tamanho da batelada tem sobre o valor final do
 SP máximo.

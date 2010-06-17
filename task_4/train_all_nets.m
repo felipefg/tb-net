@@ -50,5 +50,5 @@ end
 
 
 %% Save data
-save all_nets all_nets
-save results results
+save(sprintf('%s_all_nets', datafile(1:end-4)), 'all_nets');
+save(sprintf('%s_results' , datafile(1:end-4)), 'results' );

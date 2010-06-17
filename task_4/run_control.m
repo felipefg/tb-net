@@ -2,7 +2,7 @@
 
 rc = struct();
 rc.neurons = 4;    % Neurons in the hidden layer
-rc.nBatchSize = 5; % Number of different batch sizes that will be tested
+rc.nBatchSize = 10; % Number of different batch sizes that will be tested
 rc.functions = {'tansig', 'tansig'};
 rc.trainsPerDeal = 10;
 rc.nDraws = 20; % Number of times that a test/validation set will be created

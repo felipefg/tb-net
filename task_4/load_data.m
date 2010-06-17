@@ -3,7 +3,10 @@
 % number of elements on each class.
 disp 'Loading data...'
 
-data = load('../data/guadalupe/8v_alcione.txt');
+if ~exist('datafile', 'var'),
+    datafile = '10v.txt';
+end
+data = load(sprintf('../data/guadalupe/%s', datafile));
 
 % Remove the target from the variables
 target = data(:,end);
@@ -25,8 +28,8 @@ train =      { class_positive_train     , class_negative_train };
 validation = { class_positive_validation, class_negative_validation };
 
 %% Normalize data for the 8 variables
-centers = zeros(8, 1);
-factors =  ones(8, 1);
+centers = zeros(size(data, 2), 1);
+factors =  ones(size(data, 2), 1);
 
 all_train = [train{1} train{2}];
 centers(1,1) = mean(all_train(1,:));
