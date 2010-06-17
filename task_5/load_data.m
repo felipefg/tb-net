@@ -1,9 +1,12 @@
-% load_data.m - Load the data to be used, and divide it into two groups,
+function [ train, validation ] = load_data(filename)
+% LOAD_DATA - Loads the data in the given file and returns a cell array
+% with the data divided into classes, and divide it into two groups,
 % one for training and one for validation, each containing 50% of the
 % number of elements on each class.
-disp 'Loading data...'
 
-data = load('../data/guadalupe/10v.txt');
+% load_data.m - Load the data to be useddisp 'Loading data...'
+
+data = load(sprintf('../data/guadalupe/%s', filename));
 
 % Remove the target from the variables
 target = data(:,end);
@@ -25,8 +28,8 @@ train =      { class_positive_train     , class_negative_train };
 validation = { class_positive_validation, class_negative_validation };
 
 %% Normalize data for the 8 variables
-centers = zeros(10, 1);
-factors =  ones(10, 1);
+centers = zeros(size(data, 2), 1);
+factors =  ones(size(data, 2), 1);
 
 all_train = [train{1} train{2}];
 centers(1,1) = mean(all_train(1,:));
@@ -41,10 +44,4 @@ for i=1:2,
     validation{i} = validation{i} .* repmat(factors, 1, size(validation{i}, 2));
 end
 
-%% Save results to freeze the random selection of groups
-save train_validation_data train validation centers factors
-
-%% Clean up
-clear data target all_train i
-clear class_positive class_positive_train class_positive_validation
-clear class_negative class_negative_train class_negative_validation
+end

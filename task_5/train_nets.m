@@ -1,85 +1,58 @@
 % train_nets.m - Train all the nets for all the configurations being
 % studied
 
-%% Load Dependencies
+NUM_TRAINS = 10; % Number of trains for each database
 
-% Load data if needed.
-if exist('train', 'var') == 0,
-   if exist('train_validation_data.mat', 'file'),
-       load train_validation_data
-   else
-       load_data
-   end
-end
+%% Find the files that will be visited
+if exist('filename', 'var'),
+    files = { sprintf('../data/guadalupe/%s', filename) };
+else,
+    files = {};
+    dir_list = dir('../data/guadalupe');
+    for i=1:length(dir_list),
 
-% Loading run control configuration
-if exist('rc', 'var') == 0,
-    run_control
-end
+        filename = dir_list(i).name;
 
-%% Setup environment
-n_train_c1 = size(train{1}, 2);
-n_train_c2 = size(train{1}, 2);
-batch_size = linspace(10, min(n_train_c1, n_train_c2), rc.nBatchSize);
-batch_size = round(batch_size);
+        if findstr('txt', filename),
+            files{end+1} = filename;
+        end
 
-useSP_options = [0 1];
-
-% Deal the configurations
-nets = cell(1, size(batch_size, 2)*size(useSP_options, 2));
-for i=1:size(batch_size, 2),
-    for j=1:size(useSP_options, 2),
-        nets{ (j-1)*size(batch_size, 2) + i} = struct( ...
-            'useSP', useSP_options(j), ...
-            'batch_size', batch_size(i));
     end
 end
 
-%% Train the networks
-parfor i=1:size(nets, 2),
 
-    trained_nets = cell(1, rc.trainsPerDeal);
-    trained_trs  = cell(1, rc.trainsPerDeal);
-    mses = zeros(1, rc.trainsPerDeal);
-    SPs  = zeros(1, rc.trainsPerDeal);
+for i=1:length(files),
 
-    for j=1:rc.trainsPerDeal,
+    filename = files{i}(1:end-4);
+    fprintf('Processing %s...', filename);
+
+    %% Setup environment
+    nets = cell(1, NUM_TRAINS);
+    trs  = cell(1, NUM_TRAINS);
+
+    % Train this network
+    parfor j=1:NUM_TRAINS,
+
+        % Get a random train and validation group for this file
+        [train validation] = load_data(files{i});
+
         % Create the network
-        net = newff2(train, [-1 1], [rc.neurons], rc.functions);
+        net = newff2(train, [-1 1], [4], {'tansig', 'tansig'});
 
         % Setting train parameters
-        net.trainParam.batchSize = nets{i}.batch_size;
-        net.trainParam.useSP     = nets{i}.useSP;
-        net.trainParam.epochs    = rc.trainParam.epochs;
-        net.trainParam.max_fail  = rc.trainParam.max_fail;
+        net.trainParam.batchSize = 255;
+        net.trainParam.useSP     = 1;
+        net.trainParam.epochs    = 10000;
+        net.trainParam.max_fail  = 10000;
         net.trainParam.showWindow= 0;
-        net.trainParam.show = 100;
+        net.trainParam.show = 2000;
 
         % Train
         [net, tr] = ntrain(net, train, validation);
 
-        % Extract performances
-        mses(j) = min(tr.mse_val);
-
-        out_positive = sim(net, validation{1});
-        out_negative = sim(net, validation{2});
-        [spVec, cutVec, detVec, faVec] = genROC(out_positive, out_negative);
-        SPs(j) = max(spVec);
-
-        % Save data
-        trained_nets{j} = net;
-        trained_trs{j} = tr;
+        nets{j} = net;
+        trs{j} = tr;
     end
 
-    % Pick only the best net for this deal
-    [bestSP iBestSP] = max(SPs);
-    nets{i}.net = trained_nets(iBestSP);
-    nets{i}.tr  = trained_trs(iBestSP);
-    nets{i}.SP  = bestSP;
-    nets{i}.mse = mses(iBestSP);
+    save(sprintf('results_%s.mat',filename), 'nets', 'trs');
 end
-
-%% Save
-
-%% Cleanup
-clear n_train_c1 n_train_c2
