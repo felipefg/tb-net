@@ -1,4 +1,4 @@
-function plot_difference_n_epochs(trs, n_epochs)
+function plot_difference_n_epochs(trs, n_epochs, xmax)
 
 hold on;
 
@@ -20,3 +20,7 @@ xlabel('Epocas');
 ylabel('Diferenca relativa entre minimo e maximo');
 title(sprintf('Diferenca relativa entre minimo e maximo SP a cada %d epocas', n_epochs));
 grid();
+
+if nargin == 3,
+    xlim([1 xmax]);
+end
