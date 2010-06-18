@@ -68,6 +68,7 @@ else
   [net_par.hidNodes, net_par.trfFunc, net_par.trnParam] = getNetworkInfo(net);
   for d=1:nDeal,
     [trn val tst] = deal_sets(data, tstIsVal);
+    [trn val tst ret.pp{d}] = calculate_pre_processing(trn, val, tst, pp);
 
     % Save the deal for future reference
     ret.data{d} = struct();
@@ -77,7 +78,6 @@ else
         ret.data{d}.tst = tst;
     end
 
-    [trn val tst ret.pp{d}] = calculate_pre_processing(trn, val, tst, pp);
     if (size(trn{1},1) > 1),
       [ret.net{d} ret.evo{d} ret.sp(d) ret.det(d,:) ret.fa(d,:)] = get_best_train(net_par, trn, val, tst, nTrains, nROC);
     else

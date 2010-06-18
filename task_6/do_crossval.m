@@ -2,6 +2,12 @@
 % present, it will be the only file for cross validation. Otherwise, all files
 % in the data directory will be visited.
 
+%% Assembly the list of number of neurons in the hidden layer that will be
+% tried
+if ~exist('neuronList', 'var'),
+    neuronList = 2:20;
+end
+
 %% Find the files that will be visited
 if exist('filename', 'var'),
     files = { sprintf('../data/guadalupe/%s', filename) };
@@ -19,29 +25,35 @@ else,
     end
 end
 
-%% Perform the cross validation for each file
-rets = cell(1, length(files));
-parfor i=1:length(files),
+for k=1:length(neuronList),
 
-    data = load_data(files{i});
+    neurons = neuronList(k);
 
-    %% Setup the template network
-    net = newff2(data, [-1 1], [4], {'tansig', 'tansig'});
+    %% Perform the cross validation for each file
+    rets = cell(1, length(files));
+    parfor i=1:length(files),
 
-    % Setting train parameters
-    net.trainParam.batchSize = 121;
-    net.trainParam.useSP     = 1;
-    net.trainParam.epochs    = 10000;
-    net.trainParam.max_fail  = 10000;
-    net.trainParam.showWindow= 0;
-    net.trainParam.show = 1000;
+        data = load_data(files{i});
 
-    % Preprocessing structure
-    pp = struct();
-    pp.func = @normalize_tb;
-    pp.par = struct();
+        %% Setup the template network
+        net = newff2(data, [-1 1], [neurons], {'tansig', 'tansig'});
 
-    rets{i} = crossVal(data, net, pp, true, 12, 20, 5);
+        % Setting train parameters
+        net.trainParam.batchSize = 255;
+        net.trainParam.useSP     = 1;
+        net.trainParam.epochs    = 2000;
+        net.trainParam.max_fail  = 2000;
+        net.trainParam.showWindow= 0;
+        net.trainParam.show = 1000;
+
+        % Preprocessing structure
+        pp = struct();
+        pp.func = @normalize_tb;
+        pp.par = struct();
+
+        rets{i} = crossVal(data, net, pp, true, 12, 20, 5);
+    end
+
+    save(sprintf('results_%d_neurons.mat', neurons), 'rets', 'files', 'neurons');
+
 end
-
-save results rets files;
