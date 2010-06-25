@@ -33,13 +33,15 @@ for i=1:length(files),
             results.(key).neurons = zeros(1, length(files));
             results.(key).sp_mean = zeros(1, length(files));
             results.(key).sp_std  = zeros(1, length(files));
+            results.(key).tr      =  cell(1, length(files));
         end
 
         % Fill in statistics
         results.(key).neurons(i) = data.neurons;
         results.(key).sp_mean(i) = mean(data.rets{k}.sp);
         results.(key).sp_std(i)  =  std(data.rets{k}.sp);
-        results.(key).sp_max(i) =   max(data.rets{k}.sp);
+        results.(key).sp_max(i)  =  max(data.rets{k}.sp);
+        results.(key).tr{i} = data.rets{k}.evo; 
     end
 end
 
@@ -78,3 +80,24 @@ xlabel('Neuronios na camada escondida');
 ylabel('Produto SP');
 title(key(6:end));
 legend('Location', 'SouthEast');
+
+%% Plot convergence data
+neurons = results.(key).neurons;
+for i=1:length(neurons),
+    
+    figure;
+    
+    for j=1:length(fields),
+        key = fields{j};
+        
+        subplot(2, 3, j)
+        plot_difference_global_n_epochs(results.(key).tr{i}, 100);
+        title(sprintf('Diferenca para SP global para %s com %d neuronios', key, neurons(i)));
+        
+        subplot(2, 3, j+3)
+        plot_difference_n_epochs(results.(key).tr{i}, 100);
+    end
+    
+    %print(gcf, '-dpng', sprintf('%s-%d.png',key, neurons(i)));
+    %close;
+end
